@@ -18,6 +18,16 @@ public:
     QDateTime timeStamp() const;
     void setTimeStamp(const QDateTime &timeStamp);
 
+    double elevationTo(const GpxPoint &gpxPoint) const;
+    double distanceTo(const GpxPoint &gpxPoint) const;
+    double secondsTo(const GpxPoint &gpxPoint) const;
+    double speedKmhTo(const GpxPoint &gpxPoint) const;
+
+private:
+    double angleInDegrees(double latInDegrees) const;
+    double pointRadius(double ele, double angleInDegrees) const;
+    double degToRad(double deg) const;
+
 private:
     double m_lat = 0.0;
     double m_lon = 0.0;
