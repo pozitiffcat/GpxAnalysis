@@ -50,7 +50,7 @@ void GpxAnalysisWidget::paintData(QPainter *painter, GpxAnalysisData *data, cons
     {
         const double value = values.at(i);
         const double distanceTo = data->distanceToPosition(i);
-        points.append(QPointF(distanceTo * size().width() / distance, (value - min) * size().height() / (max - min)));
+        points.append(QPointF(distanceTo * size().width() / distance, size().height() - (value - min) * size().height() / (max - min)));
     }
 
     painter->setPen(QPen(color));
