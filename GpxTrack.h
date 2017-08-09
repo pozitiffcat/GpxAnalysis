@@ -10,6 +10,12 @@ class GpxTrack
 {
 public:
     bool parse(const QString &fileName);
+    QString errorString() const;
+
+    const GpxPoint &point(qint64 position) const;
+    qint64 pointsCount() const;
+
+    double elevationGain() const;
 
 private:
     QString m_error;

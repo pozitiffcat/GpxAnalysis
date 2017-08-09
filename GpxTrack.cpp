@@ -67,3 +67,32 @@ bool GpxTrack::parse(const QString &fileName)
 
     return true;
 }
+
+QString GpxTrack::errorString() const
+{
+    return m_error;
+}
+
+const GpxPoint &GpxTrack::point(qint64 position) const
+{
+    return m_gpxPoints.at(position);
+}
+
+qint64 GpxTrack::pointsCount() const
+{
+    return m_gpxPoints.count();
+}
+
+double GpxTrack::elevationGain() const
+{
+    double acc = 0.0;
+
+    for (qint64 i = 0; i < pointsCount() - 1; ++i)
+    {
+        const auto elevationTo = point(i).elevationTo(point(i + 1));
+        if (elevationTo > 0.0)
+            acc += elevationTo;
+    }
+
+    return acc;
+}

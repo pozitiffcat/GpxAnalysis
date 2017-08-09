@@ -4,6 +4,8 @@
 #include <QMainWindow>
 
 #include "GpxTrack.h"
+#include "SpeedAnalysisData.h"
+#include "ElevationAnalysisData.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +22,8 @@ public:
 private:
     Ui::MainWindow *ui;
     GpxTrack m_gpxTrack;
+    QSharedPointer<SpeedAnalysisData> m_speedAnalysisData;
+    QSharedPointer<ElevationAnalysisData> m_elevationAnalysisData;
 };
 
 #endif // MAINWINDOW_H

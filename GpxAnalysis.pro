@@ -27,12 +27,20 @@ SOURCES += \
         main.cpp \
         MainWindow.cpp \
     GpxTrack.cpp \
-    GpxPoint.cpp
+    GpxPoint.cpp \
+    GpxAnalysisWidget.cpp \
+    GpxAnalysisData.cpp \
+    ElevationAnalysisData.cpp \
+    SpeedAnalysisData.cpp
 
 HEADERS += \
         MainWindow.h \
     GpxTrack.h \
-    GpxPoint.h
+    GpxPoint.h \
+    GpxAnalysisWidget.h \
+    GpxAnalysisData.h \
+    ElevationAnalysisData.h \
+    SpeedAnalysisData.h
 
 FORMS += \
         MainWindow.ui
