@@ -19,21 +19,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loadRecentMenuFromSettings();
 
-    QGraphicsDropShadowEffect *textShadowEffect = new QGraphicsDropShadowEffect(this);
-    textShadowEffect->setBlurRadius(6);
-    textShadowEffect->setColor(Qt::black);
-    textShadowEffect->setXOffset(0);
-    textShadowEffect->setYOffset(0);
+    QGraphicsDropShadowEffect *overlayFrameShadowEffect = new QGraphicsDropShadowEffect(this);
+    overlayFrameShadowEffect->setBlurRadius(20);
+    overlayFrameShadowEffect->setColor(Qt::darkGray);
+    overlayFrameShadowEffect->setXOffset(0);
+    overlayFrameShadowEffect->setYOffset(0);
 
-    ui->overlayFrame->setGraphicsEffect(textShadowEffect);
+    ui->overlayFrame->setGraphicsEffect(overlayFrameShadowEffect);
 
-    QGraphicsDropShadowEffect *frameShadowEffect = new QGraphicsDropShadowEffect(this);
-    frameShadowEffect->setBlurRadius(20);
-    frameShadowEffect->setColor(Qt::darkGray);
-    frameShadowEffect->setXOffset(0);
-    frameShadowEffect->setYOffset(0);
+    QGraphicsDropShadowEffect *analysisFrameShadowEffect = new QGraphicsDropShadowEffect(this);
+    analysisFrameShadowEffect->setBlurRadius(20);
+    analysisFrameShadowEffect->setColor(Qt::darkGray);
+    analysisFrameShadowEffect->setXOffset(0);
+    analysisFrameShadowEffect->setYOffset(0);
 
-    ui->analysisFrame->setGraphicsEffect(frameShadowEffect);
+    ui->analysisFrame->setGraphicsEffect(analysisFrameShadowEffect);
 
     ui->analysisWidget->setValueMeasureLabel(tr("m"));
 
@@ -64,6 +64,10 @@ void MainWindow::updateWidgetsGeometry()
     osmMapGeometry.setTopLeft(QPoint(0, 0));
     osmMapGeometry.setSize(ui->baseWidget->size());
     ui->osmMapWidget->setGeometry(osmMapGeometry);
+
+    QRect overlayGeometry = ui->overlayFrame->geometry();
+    overlayGeometry.moveTo(QPoint(16, 16));
+    ui->overlayFrame->setGeometry(overlayGeometry);
 
     QRect analysisGeometry = ui->analysisFrame->geometry();
     analysisGeometry.moveTo(QPoint(ui->baseWidget->size().width() - analysisGeometry.width() - 16, ui->baseWidget->size().height() - analysisGeometry.height() - 16));

@@ -65,7 +65,7 @@
         <property name="palette">
          <palette>
           <active>
-           <colorrole role="WindowText">
+           <colorrole role="Base">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>255</red>
@@ -74,7 +74,7 @@
              </color>
             </brush>
            </colorrole>
-           <colorrole role="Text">
+           <colorrole role="Window">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>255</red>
@@ -85,7 +85,7 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="WindowText">
+           <colorrole role="Base">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>255</red>
@@ -94,7 +94,7 @@
              </color>
             </brush>
            </colorrole>
-           <colorrole role="Text">
+           <colorrole role="Window">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>255</red>
@@ -105,26 +105,29 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="WindowText">
+           <colorrole role="Base">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
-              <red>168</red>
-              <green>171</green>
-              <blue>177</blue>
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
              </color>
             </brush>
            </colorrole>
-           <colorrole role="Text">
+           <colorrole role="Window">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
-              <red>168</red>
-              <green>171</green>
-              <blue>177</blue>
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
              </color>
             </brush>
            </colorrole>
           </disabled>
          </palette>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
