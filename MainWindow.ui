@@ -44,7 +44,7 @@
     </property>
     <item>
      <widget class="QWidget" name="baseWidget" native="true">
-      <widget class="OsmWidget" name="osmWidget" native="true">
+      <widget class="OsmMapWidget" name="osmMapWidget" native="true">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -193,9 +193,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>OsmWidget</class>
+   <class>OsmMapWidget</class>
    <extends>QWidget</extends>
-   <header>OsmWidget.h</header>
+   <header>OsmMapWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

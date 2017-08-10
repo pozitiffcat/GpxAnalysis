@@ -32,9 +32,9 @@ SOURCES += \
     SpeedAnalysisData.cpp \
     OsmTile.cpp \
     OsmTileManager.cpp \
-    OsmWidget.cpp \
     AnalysisWidget.cpp \
-    AnalysisData.cpp
+    AnalysisData.cpp \
+    OsmMapWidget.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -44,9 +44,9 @@ HEADERS += \
     SpeedAnalysisData.h \
     OsmTile.h \
     OsmTileManager.h \
-    OsmWidget.h \
     AnalysisData.h \
-    AnalysisWidget.h
+    AnalysisWidget.h \
+    OsmMapWidget.h
 
 FORMS += \
         MainWindow.ui

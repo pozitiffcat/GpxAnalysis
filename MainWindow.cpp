@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     loadRecentMenuFromSettings();
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openGpx);
-    connect(ui->analysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, ui->osmWidget, &OsmWidget::setCurrentDistance);
+    connect(ui->analysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, ui->osmMapWidget, &OsmMapWidget::setCurrentDistance);
 }
 
 MainWindow::~MainWindow()
@@ -41,10 +41,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::updateWidgetsGeometry()
 {
-    QRect osmGeometry = ui->osmWidget->geometry();
-    osmGeometry.setTopLeft(QPoint(0, 0));
-    osmGeometry.setSize(ui->baseWidget->size());
-    ui->osmWidget->setGeometry(osmGeometry);
+    QRect osmMapGeometry = ui->osmMapWidget->geometry();
+    osmMapGeometry.setTopLeft(QPoint(0, 0));
+    osmMapGeometry.setSize(ui->baseWidget->size());
+    ui->osmMapWidget->setGeometry(osmMapGeometry);
 
     QRect analysisGeometry = ui->analysisFrame->geometry();
     analysisGeometry.moveTo(QPoint(ui->baseWidget->size().width() - analysisGeometry.width() - 16, ui->baseWidget->size().height() - analysisGeometry.height() - 16));
@@ -108,7 +108,7 @@ void MainWindow::openGpxByPath(const QString &fileName)
     connect(watcher, &QFutureWatcher<void>::finished, [this, fileName]() {
         setWindowTitle(QString("%1 [%2]").arg(qApp->applicationName(), fileName));
 
-        ui->osmWidget->setGpxTrack(m_gpxTrack.data());
+        ui->osmMapWidget->setGpxTrack(m_gpxTrack.data());
         m_elevationAnalysisData.reset(new ElevationAnalysisData(m_gpxTrack.data()));
         ui->analysisWidget->setAnalysisData(m_elevationAnalysisData.data());
 

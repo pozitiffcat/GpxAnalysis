@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "GpxTrack.h"
-#include "OsmWidget.h"
+#include "OsmMapWidget.h"
 #include "ElevationAnalysisData.h"
 
 namespace Ui {

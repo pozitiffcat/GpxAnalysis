@@ -1,11 +1,11 @@
-#include "OsmWidget.h"
+#include "OsmMapWidget.h"
 
 #include <QPainter>
 
 #include <QMouseEvent>
 #include <math.h>
 
-OsmWidget::OsmWidget(QWidget *parent)
+OsmMapWidget::OsmMapWidget(QWidget *parent)
     : QWidget(parent)
 {
     connect(&m_osmTileManager, &OsmTileManager::imageTileListReady, [this] () {
@@ -13,7 +13,7 @@ OsmWidget::OsmWidget(QWidget *parent)
     });
 }
 
-void OsmWidget::setGpxTrack(GpxTrack *gpxTrack)
+void OsmMapWidget::setGpxTrack(GpxTrack *gpxTrack)
 {
     m_gpxTrack = gpxTrack;
     m_currentDistance = 0.0;
@@ -23,24 +23,24 @@ void OsmWidget::setGpxTrack(GpxTrack *gpxTrack)
     repaint();
 }
 
-void OsmWidget::setCurrentDistance(double distance)
+void OsmMapWidget::setCurrentDistance(double distance)
 {
     m_currentDistance = distance;
     repaint();
 }
 
-QSize OsmWidget::sizeHint() const
+QSize OsmMapWidget::sizeHint() const
 {
     return QSize(256, 256);
 }
 
-void OsmWidget::mousePressEvent(QMouseEvent *event)
+void OsmMapWidget::mousePressEvent(QMouseEvent *event)
 {
     m_x = event->x();
     m_y = event->y();
 }
 
-void OsmWidget::mouseMoveEvent(QMouseEvent *event)
+void OsmMapWidget::mouseMoveEvent(QMouseEvent *event)
 {
     m_offsetX -= event->x() - m_x;
     m_offsetY -= event->y() - m_y;
@@ -51,7 +51,7 @@ void OsmWidget::mouseMoveEvent(QMouseEvent *event)
     repaint();
 }
 
-void OsmWidget::wheelEvent(QWheelEvent *event)
+void OsmMapWidget::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0)
     {
@@ -69,7 +69,7 @@ void OsmWidget::wheelEvent(QWheelEvent *event)
     repaint();
 }
 
-void OsmWidget::paintEvent(QPaintEvent *event)
+void OsmMapWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
 
@@ -78,7 +78,7 @@ void OsmWidget::paintEvent(QPaintEvent *event)
     paintRoute(&painter);
 }
 
-void OsmWidget::paintMap(QPainter *painter)
+void OsmMapWidget::paintMap(QPainter *painter)
 {
     const int osmTileSize = 256;
 
@@ -106,7 +106,7 @@ void OsmWidget::paintMap(QPainter *painter)
     m_osmTileManager.requestImageTileList(osmTileListToRequest);
 }
 
-void OsmWidget::paintRoute(QPainter *painter)
+void OsmMapWidget::paintRoute(QPainter *painter)
 {
     const int osmTileSize = 256;
 

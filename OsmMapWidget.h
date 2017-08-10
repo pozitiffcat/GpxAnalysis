@@ -1,5 +1,5 @@
-#ifndef OSMWIDGET_H
-#define OSMWIDGET_H
+#ifndef OSMMAPWIDGET_H
+#define OSMMAPWIDGET_H
 
 #include <QHash>
 #include <QWidget>
@@ -8,10 +8,10 @@
 #include "GpxTrack.h"
 #include "OsmTileManager.h"
 
-class OsmWidget : public QWidget
+class OsmMapWidget : public QWidget
 { 
 public:
-    explicit OsmWidget(QWidget *parent = nullptr);
+    explicit OsmMapWidget(QWidget *parent = nullptr);
 
     void setGpxTrack(GpxTrack *gpxTrack);
     void setCurrentDistance(double distance);
@@ -41,4 +41,4 @@ private:
     double m_offsetY = 0.0;
 };
 
-#endif // OSMWIDGET_H
+#endif // OSMMAPWIDGET_H
