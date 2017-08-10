@@ -32,7 +32,8 @@ SOURCES += \
     GpxAnalysisData.cpp \
     ElevationAnalysisData.cpp \
     SpeedAnalysisData.cpp \
-    GpxMapWidget.cpp
+    GpxMapWidget.cpp \
+    OsmTile.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -42,7 +43,8 @@ HEADERS += \
     GpxAnalysisData.h \
     ElevationAnalysisData.h \
     SpeedAnalysisData.h \
-    GpxMapWidget.h
+    GpxMapWidget.h \
+    OsmTile.h
 
 FORMS += \
         MainWindow.ui

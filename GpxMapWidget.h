@@ -3,10 +3,11 @@
 
 #include <QWidget>
 
+#include "OsmTile.h"
 #include "GpxTrack.h"
 
 class GpxMapWidget : public QWidget
-{
+{ 
 public:
     explicit GpxMapWidget(QWidget *parent = nullptr);
 
@@ -18,14 +19,11 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    double radToDeg(double r) const;
-    double degToRad(double d) const;
-
-    void requestTile();
+    void requestTile(const OsmTile &tile);
 
 private:
     GpxTrack *m_gpxTrack = nullptr;
-    QImage m_tile;
+    QImage m_tileImage;
 };
 
 #endif // GPXMAPWIDGET_H

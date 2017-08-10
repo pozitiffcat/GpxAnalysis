@@ -34,51 +34,36 @@ void GpxMapWidget::paintEvent(QPaintEvent *event)
 
     QVector<QPointF> points;
 
+    OsmTile osmTile(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), 7);
+
     for (qint64 i = 0; i < m_gpxTrack->pointsCount(); ++i)
     {
         const auto &gpxPoint = m_gpxTrack->point(i);
-
-        const double mercN = log(tan((M_PI / 4.0) + (degToRad(gpxPoint.lat()) / 2.0)));
-        const double x = (gpxPoint.lon() + 180.0) * (256.0 / 360.0);
-        const double y = (256.0 / 2.0) - (256.0 * mercN / (2.0 * M_PI));
-
-        qDebug() << "x" << x << "y" << y;
-
-        points.append(QPointF(x, y));
+        points.append(osmTile.latLonToPoint(m_tileImage.width(), m_tileImage.height(), gpxPoint.lat(), gpxPoint.lon()));
     }
 
     QPen pen(Qt::black);
     pen.setWidthF(2.0);
     painter.setPen(pen);
 
-    if (m_tile.isNull())
-        requestTile();
+    if (m_tileImage.isNull())
+        requestTile(osmTile);
 
-    painter.drawImage(0, 0, m_tile);
+    painter.drawImage(0, 0, m_tileImage);
     painter.drawPolyline(points.data(), points.count());
 }
 
-double GpxMapWidget::radToDeg(double r) const
-{
-    return r * (180.0 / M_PI);
-}
-
-double GpxMapWidget::degToRad(double d) const
-{
-    return d / (180.0 / M_PI);
-}
-
-void GpxMapWidget::requestTile()
+void GpxMapWidget::requestTile(const OsmTile &tile)
 {
     QNetworkRequest request;
-    request.setUrl(QUrl::fromUserInput("http://a.tile.openstreetmap.org/0/0/0.png"));
+    request.setUrl(tile.url());
     request.setRawHeader("User-Agent", "Mozilla/5.0 (Symbian; U; N8-00; fi-FI) AppleWebKit/534.3 (KHTML, like Gecko) MyOwnBrowserApp/1.0 Mobile Safari/534.3");
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     QNetworkReply *reply = manager->get(request);
 
     connect(reply, &QNetworkReply::finished, [this, manager, reply] () {
-        m_tile = QImage::fromData(reply->readAll());
+        m_tileImage = QImage::fromData(reply->readAll());
 
         reply->deleteLater();
         manager->deleteLater();
