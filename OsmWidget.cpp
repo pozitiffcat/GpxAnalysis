@@ -38,6 +38,12 @@ void OsmWidget::mouseMoveEvent(QMouseEvent *event)
     repaint();
 }
 
+void OsmWidget::wheelEvent(QWheelEvent *event)
+{
+    m_zoom += event->delta() > 0 ? 1 : -1;
+    repaint();
+}
+
 void OsmWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
@@ -49,7 +55,7 @@ void OsmWidget::paintEvent(QPaintEvent *event)
 
     QVector<QPointF> points;
 
-    OsmTile osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), 10);
+    OsmTile osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), m_zoom);
 
     for (qint64 i = 0; i < m_gpxTrack->pointsCount(); ++i)
     {
@@ -66,15 +72,13 @@ void OsmWidget::paintEvent(QPaintEvent *event)
     {
         for (int i = m_offsetX / 256 - 1; i < size().width() / 256 + m_offsetX / 256 + 1; ++i)
         {
-            auto currentOsmTile = OsmTile::fromXY(osmStartTile.tileX() + i, osmStartTile.tileY() + j, 10);
+            auto currentOsmTile = OsmTile::fromXY(osmStartTile.tileX() + i, osmStartTile.tileY() + j, m_zoom);
 
             if (m_osmTileManager.hasImageInCache(currentOsmTile))
-                m_tileImageMap.insert(qMakePair(i, j), m_osmTileManager.imageFromCache(currentOsmTile));
-
-            if (!m_tileImageMap.contains(qMakePair(i, j)))
+                painter.drawImage(i * 256 - m_offsetX, j * 256 - m_offsetY, m_osmTileManager.imageFromCache(currentOsmTile));
+            else if (!m_osmTileManager.hasImageInRequest(currentOsmTile)) {
                 requestTile(i, j, currentOsmTile);
-
-            painter.drawImage(i * 256 - m_offsetX, j * 256 - m_offsetY, m_tileImageMap.value(qMakePair(i, j)));
+            }
         }
     }
 
@@ -83,11 +87,8 @@ void OsmWidget::paintEvent(QPaintEvent *event)
 
 void OsmWidget::requestTile(int i,int j, const OsmTile &osmTile)
 {
-    m_tileImageMap.insert(qMakePair(i, j), QImage());
-
     m_osmTileManager.requestTile(osmTile);
     connect(&m_osmTileManager, &OsmTileManager::imageReady, [this, i, j, osmTile] () {
-        m_tileImageMap.insert(qMakePair(i, j), m_osmTileManager.imageFromCache(osmTile));
-        repaint();
+        //repaint();
     });
 }

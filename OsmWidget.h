@@ -20,6 +20,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:
@@ -28,7 +29,7 @@ private:
 private:
     GpxTrack *m_gpxTrack = nullptr;
     OsmTileManager m_osmTileManager;
-    QHash<QPair<int, int>, QImage> m_tileImageMap;
+    int m_zoom = 10;
 
     double m_x = 0.0;
     double m_y = 0.0;

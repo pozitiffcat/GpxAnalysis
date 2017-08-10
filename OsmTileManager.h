@@ -15,6 +15,7 @@ public:
 
     void requestTile(const OsmTile &osmTile);
     bool hasImageInCache(const OsmTile &osmTile) const;
+    bool hasImageInRequest(const OsmTile &osmTile) const;
     QImage imageFromCache(const OsmTile &osmTile) const;
 
 signals:
@@ -23,6 +24,7 @@ signals:
 private:
     QNetworkAccessManager m_manager;
     QHash<QUrl, QImage> m_imageCache;
+    QSet<QUrl> m_imageInRequest;
 };
 
 #endif // OSMTILEMANAGER_H

@@ -15,9 +15,11 @@ void OsmTileManager::requestTile(const OsmTile &osmTile)
 
     qDebug() << "Request OSM image" << request.url();
 
+    m_imageInRequest.insert(osmTile.url());
     QNetworkReply *reply = m_manager.get(request);
 
     connect(reply, &QNetworkReply::finished, [this, osmTile, reply] () {
+        m_imageInRequest.remove(osmTile.url());
         QImage image = QImage::fromData(reply->readAll());
         m_imageCache.insert(osmTile.url(), image);
         emit imageReady(image);
@@ -28,6 +30,11 @@ void OsmTileManager::requestTile(const OsmTile &osmTile)
 bool OsmTileManager::hasImageInCache(const OsmTile &osmTile) const
 {
     return m_imageCache.contains(osmTile.url());
+}
+
+bool OsmTileManager::hasImageInRequest(const OsmTile &osmTile) const
+{
+    return m_imageInRequest.contains(osmTile.url());
 }
 
 QImage OsmTileManager::imageFromCache(const OsmTile &osmTile) const
