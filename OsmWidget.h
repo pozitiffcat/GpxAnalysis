@@ -18,6 +18,8 @@ public:
     QSize sizeHint() const;
 
 protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:
@@ -27,6 +29,11 @@ private:
     GpxTrack *m_gpxTrack = nullptr;
     OsmTileManager m_osmTileManager;
     QHash<QPair<int, int>, QImage> m_tileImageMap;
+
+    double m_x = 0.0;
+    double m_y = 0.0;
+    double m_offsetX = 0.0;
+    double m_offsetY = 0.0;
 };
 
 #endif // OSMWIDGET_H
