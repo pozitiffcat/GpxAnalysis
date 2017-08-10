@@ -20,7 +20,8 @@ QUrl OsmTile::url() const
 {
     int x = tileX();
     int y = tileY();
-    return QUrl::fromUserInput(QString("http://a.tile.openstreetmap.org/%3/%1/%2.png").arg(x).arg(y).arg(m_zoom));
+    return QUrl::fromUserInput(QString("http://a.tile.thunderforest.com/cycle/%3/%1/%2.png?apikey=159a438ecb5f4a809a33feb3d2435b2d").arg(x).arg(y).arg(m_zoom));
+    //return QUrl::fromUserInput(QString("http://a.tile.openstreetmap.org/%3/%1/%2.png").arg(x).arg(y).arg(m_zoom));
 }
 
 QPointF OsmTile::latLonToPoint(int width, int height, double lat, double lon) const
