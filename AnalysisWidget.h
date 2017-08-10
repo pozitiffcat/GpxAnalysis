@@ -25,7 +25,8 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    void paintData(QPainter *paintDevice);
+    void paintData(QPainter *painter);
+    void paintCurrent(QPainter *painter);
 
 private:
     double m_currentDistance = 0.0;

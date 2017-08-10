@@ -50,15 +50,7 @@ void AnalysisWidget::paintEvent(QPaintEvent *event)
     painter.setRenderHints(QPainter::Antialiasing);
 
     paintData(&painter);
-
-    double distance = m_analysisData->distance();
-    double currentDistanceX = m_currentDistance * size().width() / distance;
-
-    QPen pen(palette().highlight().color());
-    pen.setWidth(1.0);
-    painter.setPen(pen);
-
-    painter.drawLine(QPointF(currentDistanceX, 0.0), QPointF(currentDistanceX, size().height()));
+    paintCurrent(&painter);
 }
 
 void AnalysisWidget::paintData(QPainter *painter)
@@ -86,7 +78,21 @@ void AnalysisWidget::paintData(QPainter *painter)
         points.append(QPointF(distanceTo * size().width() / distance, size().height() - (value - min) * size().height() / (max - min)));
     }
 
-    const QColor color = palette().highlight().color();
-    painter->setPen(QPen(color));
+    QPen pen(Qt::darkCyan);
+    pen.setWidth(1.0);
+    painter->setPen(pen);
+
     painter->drawPolyline(points.data(), points.count());
+}
+
+void AnalysisWidget::paintCurrent(QPainter *painter)
+{
+    double distance = m_analysisData->distance();
+    double currentDistanceX = m_currentDistance * size().width() / distance;
+
+    QPen pen(Qt::darkMagenta);
+    pen.setWidth(1.0);
+    painter->setPen(pen);
+
+    painter->drawLine(QPointF(currentDistanceX, 0.0), QPointF(currentDistanceX, size().height()));
 }
