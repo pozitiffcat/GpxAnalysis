@@ -80,24 +80,35 @@ void OsmWidget::paintEvent(QPaintEvent *event)
     OsmTile osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), m_zoom);
 
     double distanceCurrent = 0.0;
-    double distanceLeft = 0.0;
+    QPointF pointCurrent;
+
     for (qint64 i = 0; i < m_gpxTrack->pointsCount(); ++i)
     {
         const auto &gpxPoint = m_gpxTrack->point(i);
+        double distance = 0.0;
 
         if (i != 0)
         {
             const auto &lastGpxPoint = m_gpxTrack->point(i - 1);
-            distanceLeft = distanceCurrent + lastGpxPoint.distanceTo(gpxPoint);
+            distance = distanceCurrent + lastGpxPoint.distanceTo(gpxPoint);
         }
 
         QPointF point = osmStartTile.latLonToPoint(256, 256, gpxPoint.lat(), gpxPoint.lon());
         points.append(QPointF(point.x() - m_offsetX, point.y() - m_offsetY));
 
-        if (m_currentDistance >= distanceCurrent && m_currentDistance < distanceLeft)
-            currentPoint = QPointF(point.x() - m_offsetX, point.y() - m_offsetY);
+        if (m_currentDistance >= distanceCurrent && m_currentDistance < distance)
+        {
+            QPointF endPoint = QPointF(pointCurrent.x() - m_offsetX, pointCurrent.y() - m_offsetY);
+            QPointF startPoint = QPointF(point.x() - m_offsetX, point.y() - m_offsetY);
 
-        distanceCurrent = distanceLeft;
+            double m = distance - distanceCurrent;
+            double cm = distance - m_currentDistance;
+            QPointF oPoint = endPoint - startPoint;
+            currentPoint = oPoint * cm / m + startPoint;
+        }
+
+        distanceCurrent = distance;
+        pointCurrent = point;
     }
 
     QList<OsmTile> osmTileListToRequest;
