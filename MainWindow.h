@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "AnalysisWidget.h"
+
 #include "GpxTrack.h"
 #include "SpeedAnalysisData.h"
 #include "ElevationAnalysisData.h"
@@ -28,6 +30,8 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    AnalysisWidget *m_elevationAnalysisWidget;
+    AnalysisWidget *m_speedAnalysisWidget;
     QSharedPointer<GpxTrack> m_gpxTrack;
     QSharedPointer<SpeedAnalysisData> m_speedAnalysisData;
     QSharedPointer<ElevationAnalysisData> m_elevationAnalysisData;

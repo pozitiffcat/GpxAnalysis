@@ -12,24 +12,24 @@ class AnalysisWidget : public QWidget
 public:
     explicit AnalysisWidget(QWidget *parent = nullptr);
 
-    void addData(AnalysisData *data);
-    void clearDataSet();
+    void setAnalysisData(AnalysisData *data);
 
+    void setCurrentDistance(double distance);
     double currentDistance() const;
 
 signals:
-    void currentDistanceChanged();
+    void currentDistanceChangedByMouse();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:
-    void paintData(QPainter *paintDevice, AnalysisData *data, const QColor &color);
+    void paintData(QPainter *paintDevice);
 
 private:
     double m_currentDistance = 0.0;
-    QList<AnalysisData *> m_gpxAnalysisDataList;
+    AnalysisData * m_analysisData = nullptr;
 };
 
 #endif // ANALYSISWIDGET_H

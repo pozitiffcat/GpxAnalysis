@@ -15,11 +15,37 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     loadRecentMenuFromSettings();
-
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openGpx);
 
-    connect(ui->gpxAnalysisWidget, &AnalysisWidget::currentDistanceChanged, [this] () {
-        ui->gpxMapWidget->setCurrentDistance(ui->gpxAnalysisWidget->currentDistance());
+    QWidget *scrollableWidget = new QWidget;
+    scrollableWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    scrollableWidget->setLayout(new QVBoxLayout);
+    ui->analysisScrollArea->setWidgetResizable(true);
+    ui->analysisScrollArea->setWidget(scrollableWidget);
+
+    QPalette analysisPalette = palette();
+    analysisPalette.setColor(QPalette::Background, analysisPalette.base().color());
+
+    m_elevationAnalysisWidget = new AnalysisWidget;
+    m_elevationAnalysisWidget->setAutoFillBackground(true);
+    m_elevationAnalysisWidget->setPalette(analysisPalette);
+    m_elevationAnalysisWidget->setFixedHeight(100);
+    scrollableWidget->layout()->addWidget(m_elevationAnalysisWidget);
+
+    connect(m_elevationAnalysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, [this] () {
+        ui->gpxMapWidget->setCurrentDistance(m_elevationAnalysisWidget->currentDistance());
+        m_speedAnalysisWidget->setCurrentDistance(m_elevationAnalysisWidget->currentDistance());
+    });
+
+    m_speedAnalysisWidget = new AnalysisWidget;
+    m_speedAnalysisWidget->setAutoFillBackground(true);
+    m_speedAnalysisWidget->setFixedHeight(100);
+    m_speedAnalysisWidget->setPalette(analysisPalette);
+    scrollableWidget->layout()->addWidget(m_speedAnalysisWidget);
+
+    connect(m_speedAnalysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, [this] () {
+        ui->gpxMapWidget->setCurrentDistance(m_speedAnalysisWidget->currentDistance());
+        m_elevationAnalysisWidget->setCurrentDistance(m_speedAnalysisWidget->currentDistance());
     });
 }
 
@@ -90,12 +116,11 @@ void MainWindow::openGpxByPath(const QString &fileName)
         ui->elevationGainLabel->setText(tr("%1 meters").arg(m_gpxTrack->elevationGain()));
         ui->distanceLabel->setText(tr("%1 kilometers").arg(m_gpxTrack->distance() / 1000.0));
 
-        m_speedAnalysisData.reset(new SpeedAnalysisData(m_gpxTrack.data()));
         m_elevationAnalysisData.reset(new ElevationAnalysisData(m_gpxTrack.data()));
+        m_speedAnalysisData.reset(new SpeedAnalysisData(m_gpxTrack.data()));
 
-        ui->gpxAnalysisWidget->clearDataSet();
-        ui->gpxAnalysisWidget->addData(m_speedAnalysisData.data());
-        ui->gpxAnalysisWidget->addData(m_elevationAnalysisData.data());
+        m_elevationAnalysisWidget->setAnalysisData(m_elevationAnalysisData.data());
+        m_speedAnalysisWidget->setAnalysisData(m_speedAnalysisData.data());
 
         if (appendRecentMenuToSettings(fileName))
             loadRecentMenuFromSettings();

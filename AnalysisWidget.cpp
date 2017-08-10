@@ -1,7 +1,7 @@
 #include "AnalysisWidget.h"
 
-#include <QMouseEvent>
 #include <QPainter>
+#include <QMouseEvent>
 
 AnalysisWidget::AnalysisWidget(QWidget *parent)
     : QWidget(parent)
@@ -9,15 +9,15 @@ AnalysisWidget::AnalysisWidget(QWidget *parent)
     setMouseTracking(true);
 }
 
-void AnalysisWidget::addData(AnalysisData *data)
+void AnalysisWidget::setAnalysisData(AnalysisData *data)
 {
-    m_gpxAnalysisDataList.append(data);
+    m_analysisData = data;
     repaint();
 }
 
-void AnalysisWidget::clearDataSet()
+void AnalysisWidget::setCurrentDistance(double distance)
 {
-    m_gpxAnalysisDataList.clear();
+    m_currentDistance = distance;
     repaint();
 }
 
@@ -28,20 +28,20 @@ double AnalysisWidget::currentDistance() const
 
 void AnalysisWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_gpxAnalysisDataList.isEmpty())
+    if (!m_analysisData)
         return;
 
-    double distance = m_gpxAnalysisDataList.first()->distance();
+    double distance = m_analysisData->distance();
     m_currentDistance = event->x() * distance / size().width();
 
     repaint();
 
-    emit currentDistanceChanged();
+    emit currentDistanceChangedByMouse();
 }
 
 void AnalysisWidget::paintEvent(QPaintEvent *event)
 {
-    if (m_gpxAnalysisDataList.isEmpty())
+    if (!m_analysisData)
         return;
 
     QWidget::paintEvent(event);
@@ -49,14 +49,9 @@ void AnalysisWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing);
 
-    QColor color = palette().highlight().color();
-    for (auto gpxAnalysisData : m_gpxAnalysisDataList)
-    {
-        paintData(&painter, gpxAnalysisData, color);
-        color = color.lighter();
-    }
+    paintData(&painter);
 
-    double distance = m_gpxAnalysisDataList.first()->distance();
+    double distance = m_analysisData->distance();
     double currentDistanceX = m_currentDistance * size().width() / distance;
 
     QPen pen(palette().highlight().color());
@@ -66,17 +61,17 @@ void AnalysisWidget::paintEvent(QPaintEvent *event)
     painter.drawLine(QPointF(currentDistanceX, 0.0), QPointF(currentDistanceX, size().height()));
 }
 
-void AnalysisWidget::paintData(QPainter *painter, AnalysisData *data, const QColor &color)
+void AnalysisWidget::paintData(QPainter *painter)
 {
-    const double distance = data->distance();
+    const double distance = m_analysisData->distance();
     double min = 99999.9;
     double max = -99999.9;
 
     QVector<double> values;
 
-    for (qint64 i = 0; i < data->count(); ++i)
+    for (qint64 i = 0; i < m_analysisData->count(); ++i)
     {
-        const double value = data->valueOnPosition(i);
+        const double value = m_analysisData->valueOnPosition(i);
         values.append(value);
         min = qMin(min, value);
         max = qMax(max, value);
@@ -84,13 +79,14 @@ void AnalysisWidget::paintData(QPainter *painter, AnalysisData *data, const QCol
 
     QVector<QPointF> points;
 
-    for (qint64 i = 0; i < data->count(); ++i)
+    for (qint64 i = 0; i < m_analysisData->count(); ++i)
     {
         const double value = values.at(i);
-        const double distanceTo = data->distanceToPosition(i);
+        const double distanceTo = m_analysisData->distanceToPosition(i);
         points.append(QPointF(distanceTo * size().width() / distance, size().height() - (value - min) * size().height() / (max - min)));
     }
 
+    const QColor color = palette().highlight().color();
     painter->setPen(QPen(color));
     painter->drawPolyline(points.data(), points.count());
 }

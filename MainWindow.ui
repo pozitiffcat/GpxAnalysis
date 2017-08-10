@@ -6,70 +6,101 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>543</width>
-    <height>452</height>
+    <width>655</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0,0">
+   <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,1">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
     <item>
      <widget class="OsmWidget" name="gpxMapWidget" native="true"/>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="frame_2">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
        <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Elevation gain</string>
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="elevationGainLabel">
-            <property name="text">
-             <string>0</string>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="title">
+             <string>Elevation gain</string>
             </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLabel" name="elevationGainLabel">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="title">
+             <string>Distance</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="distanceLabel">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Distance</string>
+        <widget class="QScrollArea" name="analysisScrollArea">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QLabel" name="distanceLabel">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>619</width>
+            <height>154</height>
+           </rect>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="AnalysisWidget" name="gpxAnalysisWidget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>100</height>
-       </size>
-      </property>
      </widget>
     </item>
    </layout>
@@ -79,7 +110,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>543</width>
+     <width>655</width>
      <height>26</height>
     </rect>
    </property>
@@ -119,12 +150,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>AnalysisWidget</class>
-   <extends>QWidget</extends>
-   <header>AnalysisWidget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>OsmWidget</class>
    <extends>QWidget</extends>
