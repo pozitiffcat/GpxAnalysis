@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QProgressDialog>
+#include <QGraphicsEffect>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     loadRecentMenuFromSettings();
+
+    QGraphicsDropShadowEffect *textShadowEffect = new QGraphicsDropShadowEffect(this);
+    textShadowEffect->setBlurRadius(6);
+    textShadowEffect->setColor(Qt::black);
+    textShadowEffect->setXOffset(0);
+    textShadowEffect->setYOffset(0);
+
+    ui->overlayFrame->setGraphicsEffect(textShadowEffect);
+
+    QGraphicsDropShadowEffect *frameShadowEffect = new QGraphicsDropShadowEffect(this);
+    frameShadowEffect->setBlurRadius(20);
+    frameShadowEffect->setColor(Qt::darkGray);
+    frameShadowEffect->setXOffset(0);
+    frameShadowEffect->setYOffset(0);
+
+    ui->analysisFrame->setGraphicsEffect(frameShadowEffect);
+
+    ui->analysisWidget->setValueMeasureLabel(tr("m"));
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openGpx);
     connect(ui->analysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, ui->osmMapWidget, &OsmMapWidget::setCurrentDistance);
@@ -97,6 +116,9 @@ void MainWindow::openGpx()
 
 void MainWindow::openGpxByPath(const QString &fileName)
 {
+    ui->osmMapWidget->setGpxTrack(nullptr);
+    ui->analysisWidget->setAnalysisData(nullptr);
+
     QFuture<void> future = QtConcurrent::run(QThreadPool::globalInstance(), [this, fileName]() {
         m_gpxTrack.reset(new GpxTrack(fileName));
     });
@@ -111,6 +133,9 @@ void MainWindow::openGpxByPath(const QString &fileName)
         ui->osmMapWidget->setGpxTrack(m_gpxTrack.data());
         m_elevationAnalysisData.reset(new ElevationAnalysisData(m_gpxTrack.data()));
         ui->analysisWidget->setAnalysisData(m_elevationAnalysisData.data());
+
+        ui->distanceLabel->setText(tr("%1 km").arg(m_gpxTrack->distance() / 1000.0, 0, 'f', 1));
+        ui->elevationGainLabel->setText(tr("%1 m").arg(m_gpxTrack->elevationGain(), 0, 'f', 1));
 
         if (appendRecentMenuToSettings(fileName))
             loadRecentMenuFromSettings();
