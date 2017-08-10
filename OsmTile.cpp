@@ -2,11 +2,18 @@
 
 #include <math.h>
 
-OsmTile::OsmTile(double lat, double lon, int zoom)
-    : m_lat(lat),
-      m_lon(lon),
-      m_zoom(zoom)
+OsmTile OsmTile::fromXY(int tileX, int tileY, int zoom)
 {
+    return OsmTile(tileX, tileY, zoom);
+}
+
+OsmTile OsmTile::fromLatLon(double lat, double lon, int zoom)
+{
+    const double n = pow(2.0, zoom);
+    const double latRad = degToRad(lat);
+    const double tileX = (lon + 180.0) / 360.0 * n;
+    const double tileY = (1.0 - log(tan(latRad) + (1.0 / cos(latRad))) / M_PI) / 2.0 * n;
+    return OsmTile(tileX, tileY, zoom);
 }
 
 QUrl OsmTile::url() const
@@ -28,6 +35,23 @@ QPointF OsmTile::latLonToPoint(int width, int height, double lat, double lon) co
     return QPointF(x - xOffset, y - yOffset);
 }
 
+int OsmTile::tileX() const
+{
+    return m_tileX;
+}
+
+int OsmTile::tileY() const
+{
+    return m_tileY;
+}
+
+OsmTile::OsmTile(int tileX, int tileY, int zoom)
+    : m_tileX(tileX),
+      m_tileY(tileY),
+      m_zoom(zoom)
+{
+}
+
 QRectF OsmTile::boundingBox() const
 {
     QRectF rect;
@@ -36,19 +60,6 @@ QRectF OsmTile::boundingBox() const
     rect.setLeft(tileToLon(tileX()));
     rect.setRight(tileToLon(tileX()) + 1);
     return rect;
-}
-
-int OsmTile::tileX() const
-{
-    const double n = pow(2.0, m_zoom);
-    return (m_lon + 180.0) / 360.0 * n;
-}
-
-int OsmTile::tileY() const
-{
-    const double latRad = degToRad(m_lat);
-    const double n = pow(2.0, m_zoom);
-    return (1.0 - log(tan(latRad) + (1.0 / cos(latRad))) / M_PI) / 2.0 * n;
 }
 
 double OsmTile::tileToLon(int x) const
@@ -62,12 +73,12 @@ double OsmTile::tileToLat(int y) const
     return radToDeg(atan(sinh(n)));
 }
 
-double OsmTile::radToDeg(double r) const
+double OsmTile::radToDeg(double r)
 {
     return r * (180.0 / M_PI);
 }
 
-double OsmTile::degToRad(double d) const
+double OsmTile::degToRad(double d)
 {
     return d / (180.0 / M_PI);
 }

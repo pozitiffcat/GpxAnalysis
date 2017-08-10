@@ -7,26 +7,29 @@
 class OsmTile
 {
 public:
-    OsmTile(double lat, double lon, int zoom);
+    static OsmTile fromXY(int tileX, int tileY, int zoom);
+    static OsmTile fromLatLon(double lat, double lon, int zoom);
 
     QUrl url() const;
     QPointF latLonToPoint(int width, int height, double lat, double lon) const;
 
-private:
-    QRectF boundingBox() const;
-
     int tileX() const;
     int tileY() const;
+
+private:
+    OsmTile(int tileX, int tileY, int zoom);
+
+    QRectF boundingBox() const;
 
     double tileToLon(int x) const;
     double tileToLat(int y) const;
 
-    double radToDeg(double r) const;
-    double degToRad(double d) const;
+    static double radToDeg(double r);
+    static double degToRad(double d);
 
 private:
-    const double m_lat;
-    const double m_lon;
+    const double m_tileX;
+    const double m_tileY;
     const int m_zoom;
 };
 
