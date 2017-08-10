@@ -9,6 +9,16 @@ OsmTileManager::OsmTileManager(QObject *parent)
 
 void OsmTileManager::requestImageTileList(const QList<OsmTile> osmTileList)
 {
+    if (m_requestInProgress) {
+        const auto currentOsmTile = m_osmTileList.first();
+        m_osmTileList.clear();
+        m_osmTileList.append(currentOsmTile);
+    }
+    else
+    {
+        m_osmTileList.clear();
+    }
+
     for (const auto &osmTile : osmTileList)
     {
         if (!m_osmTileList.contains(osmTile) && !m_imageCache.contains(osmTile.url()))
