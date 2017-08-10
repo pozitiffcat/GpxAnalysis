@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,7 +31,8 @@ SOURCES += \
     GpxAnalysisWidget.cpp \
     GpxAnalysisData.cpp \
     ElevationAnalysisData.cpp \
-    SpeedAnalysisData.cpp
+    SpeedAnalysisData.cpp \
+    GpxMapWidget.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -40,7 +41,8 @@ HEADERS += \
     GpxAnalysisWidget.h \
     GpxAnalysisData.h \
     ElevationAnalysisData.h \
-    SpeedAnalysisData.h
+    SpeedAnalysisData.h \
+    GpxMapWidget.h
 
 FORMS += \
         MainWindow.ui

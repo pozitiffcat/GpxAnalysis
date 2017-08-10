@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <widget class="QWidget" name="widget" native="true"/>
+     <widget class="GpxMapWidget" name="gpxMapWidget" native="true"/>
     </item>
     <item>
      <widget class="QFrame" name="frame">
@@ -93,6 +93,12 @@
    <class>GpxAnalysisWidget</class>
    <extends>QWidget</extends>
    <header>GpxAnalysisWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GpxMapWidget</class>
+   <extends>QWidget</extends>
+   <header>GpxMapWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
