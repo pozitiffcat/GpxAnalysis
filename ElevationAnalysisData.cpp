@@ -1,7 +1,7 @@
 #include "ElevationAnalysisData.h"
 
 ElevationAnalysisData::ElevationAnalysisData(GpxTrack *gpxTrack)
-    : GpxAnalysisData(gpxTrack)
+    : AnalysisData(gpxTrack)
 {
 }
 

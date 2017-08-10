@@ -63,7 +63,7 @@
      </widget>
     </item>
     <item>
-     <widget class="GpxAnalysisWidget" name="gpxAnalysisWidget" native="true">
+     <widget class="AnalysisWidget" name="gpxAnalysisWidget" native="true">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -120,9 +120,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>GpxAnalysisWidget</class>
+   <class>AnalysisWidget</class>
    <extends>QWidget</extends>
-   <header>GpxAnalysisWidget.h</header>
+   <header>AnalysisWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

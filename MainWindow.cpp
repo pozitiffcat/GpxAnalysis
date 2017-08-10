@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openGpx);
 
-    connect(ui->gpxAnalysisWidget, &GpxAnalysisWidget::currentDistanceChanged, [this] () {
+    connect(ui->gpxAnalysisWidget, &AnalysisWidget::currentDistanceChanged, [this] () {
         ui->gpxMapWidget->setCurrentDistance(ui->gpxAnalysisWidget->currentDistance());
     });
 }

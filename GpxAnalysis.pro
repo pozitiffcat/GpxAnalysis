@@ -28,25 +28,25 @@ SOURCES += \
         MainWindow.cpp \
     GpxTrack.cpp \
     GpxPoint.cpp \
-    GpxAnalysisWidget.cpp \
-    GpxAnalysisData.cpp \
     ElevationAnalysisData.cpp \
     SpeedAnalysisData.cpp \
     OsmTile.cpp \
     OsmTileManager.cpp \
-    OsmWidget.cpp
+    OsmWidget.cpp \
+    AnalysisWidget.cpp \
+    AnalysisData.cpp
 
 HEADERS += \
         MainWindow.h \
     GpxTrack.h \
     GpxPoint.h \
-    GpxAnalysisWidget.h \
-    GpxAnalysisData.h \
     ElevationAnalysisData.h \
     SpeedAnalysisData.h \
     OsmTile.h \
     OsmTileManager.h \
-    OsmWidget.h
+    OsmWidget.h \
+    AnalysisData.h \
+    AnalysisWidget.h
 
 FORMS += \
         MainWindow.ui

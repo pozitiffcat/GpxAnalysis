@@ -1,15 +1,15 @@
-#ifndef GPXANALYSISDATA_H
-#define GPXANALYSISDATA_H
+#ifndef ANALYSISDATA_H
+#define ANALYSISDATA_H
 
 #include <qglobal.h>
 
 #include "GpxTrack.h"
 
-class GpxAnalysisData
+class AnalysisData
 {
 public:
-    explicit GpxAnalysisData(GpxTrack *gpxTrack);
-    virtual ~GpxAnalysisData() = default;
+    explicit AnalysisData(GpxTrack *gpxTrack);
+    virtual ~AnalysisData() = default;
 
     double distance() const;
     double distanceToPosition(qint64 position) const;
@@ -22,4 +22,4 @@ protected:
     QVector<double> m_distances;
 };
 
-#endif // GPXANALYSISDATA_H
+#endif // ANALYSISDATA_H

@@ -1,9 +1,9 @@
 #ifndef SPEEDANALYSISDATA_H
 #define SPEEDANALYSISDATA_H
 
-#include "GpxAnalysisData.h"
+#include "AnalysisData.h"
 
-class SpeedAnalysisData : public GpxAnalysisData
+class SpeedAnalysisData : public AnalysisData
 {
 public:
     explicit SpeedAnalysisData(GpxTrack *gpxTrack);

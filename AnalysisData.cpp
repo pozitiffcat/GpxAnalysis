@@ -1,6 +1,6 @@
-#include "GpxAnalysisData.h"
+#include "AnalysisData.h"
 
-GpxAnalysisData::GpxAnalysisData(GpxTrack *gpxTrack)
+AnalysisData::AnalysisData(GpxTrack *gpxTrack)
     : m_gpxTrack(gpxTrack)
 {
     double acc = 0.0;
@@ -13,12 +13,12 @@ GpxAnalysisData::GpxAnalysisData(GpxTrack *gpxTrack)
     }
 }
 
-double GpxAnalysisData::distance() const
+double AnalysisData::distance() const
 {
     return m_distances.last();
 }
 
-double GpxAnalysisData::distanceToPosition(qint64 position) const
+double AnalysisData::distanceToPosition(qint64 position) const
 {
     return m_distances.at(position);
 }

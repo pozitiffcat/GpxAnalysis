@@ -1,7 +1,7 @@
 #include "SpeedAnalysisData.h"
 
 SpeedAnalysisData::SpeedAnalysisData(GpxTrack *gpxTrack)
-    : GpxAnalysisData(gpxTrack)
+    : AnalysisData(gpxTrack)
 {
 }
 

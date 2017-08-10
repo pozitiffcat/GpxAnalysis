@@ -1,9 +1,9 @@
 #ifndef ELEVATIONANALYSISDATA_H
 #define ELEVATIONANALYSISDATA_H
 
-#include "GpxAnalysisData.h"
+#include "AnalysisData.h"
 
-class ElevationAnalysisData : public GpxAnalysisData
+class ElevationAnalysisData : public AnalysisData
 {
 public:
     explicit ElevationAnalysisData(GpxTrack *gpxTrack);
