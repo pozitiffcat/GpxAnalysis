@@ -24,9 +24,6 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    void requestTile(int i, int j, const OsmTile &tile);
-
-private:
     GpxTrack *m_gpxTrack = nullptr;
     OsmTileManager m_osmTileManager;
     int m_zoom = 10;

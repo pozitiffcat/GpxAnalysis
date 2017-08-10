@@ -13,18 +13,20 @@ class OsmTileManager : public QObject
 public:
     explicit OsmTileManager(QObject *parent = nullptr);
 
-    void requestTile(const OsmTile &osmTile);
+    void requestImageTileList(const QList<OsmTile> osmTileList);
+    void requestCurrent();
+
     bool hasImageInCache(const OsmTile &osmTile) const;
-    bool hasImageInRequest(const OsmTile &osmTile) const;
     QImage imageFromCache(const OsmTile &osmTile) const;
 
 signals:
-    void imageReady(const QImage &image);
+    void imageTileListReady();
 
 private:
     QNetworkAccessManager m_manager;
     QHash<QUrl, QImage> m_imageCache;
-    QSet<QUrl> m_imageInRequest;
+    QList<OsmTile> m_osmTileList;
+    bool m_requestInProgress = false;
 };
 
 #endif // OSMTILEMANAGER_H

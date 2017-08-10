@@ -7,34 +7,54 @@ OsmTileManager::OsmTileManager(QObject *parent)
 {
 }
 
-void OsmTileManager::requestTile(const OsmTile &osmTile)
+void OsmTileManager::requestImageTileList(const QList<OsmTile> osmTileList)
 {
+    for (const auto &osmTile : osmTileList)
+    {
+        if (!m_osmTileList.contains(osmTile) && !m_imageCache.contains(osmTile.url()))
+            m_osmTileList.append(osmTile);
+    }
+
+    if (!m_osmTileList.isEmpty() && !m_requestInProgress)
+        requestCurrent();
+}
+
+void OsmTileManager::requestCurrent()
+{
+    m_requestInProgress = true;
+
     QNetworkRequest request;
-    request.setUrl(osmTile.url());
+    request.setUrl(m_osmTileList.first().url());
     request.setRawHeader("User-Agent", "Mozilla/5.0 (Symbian; U; N8-00; fi-FI) AppleWebKit/534.3 (KHTML, like Gecko) MyOwnBrowserApp/1.0 Mobile Safari/534.3");
 
     qDebug() << "Request OSM image" << request.url();
 
-    m_imageInRequest.insert(osmTile.url());
     QNetworkReply *reply = m_manager.get(request);
 
-    connect(reply, &QNetworkReply::finished, [this, osmTile, reply] () {
-        m_imageInRequest.remove(osmTile.url());
+    connect(reply, &QNetworkReply::finished, [this, reply] () {
+        qDebug() << "Respond OSM image" << reply->request().url();
+
         QImage image = QImage::fromData(reply->readAll());
-        m_imageCache.insert(osmTile.url(), image);
-        emit imageReady(image);
+        m_imageCache.insert(m_osmTileList.first().url(), image);
+
+        m_osmTileList.removeFirst();
         reply->deleteLater();
+
+        if (!m_osmTileList.isEmpty())
+        {
+            requestCurrent();
+        }
+        else
+        {
+            m_requestInProgress = false;
+            emit imageTileListReady();
+        }
     });
 }
 
 bool OsmTileManager::hasImageInCache(const OsmTile &osmTile) const
 {
     return m_imageCache.contains(osmTile.url());
-}
-
-bool OsmTileManager::hasImageInRequest(const OsmTile &osmTile) const
-{
-    return m_imageInRequest.contains(osmTile.url());
 }
 
 QImage OsmTileManager::imageFromCache(const OsmTile &osmTile) const

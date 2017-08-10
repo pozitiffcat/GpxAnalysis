@@ -8,6 +8,9 @@
 OsmWidget::OsmWidget(QWidget *parent)
     : QWidget(parent)
 {
+    connect(&m_osmTileManager, &OsmTileManager::imageTileListReady, [this] () {
+        repaint();
+    });
 }
 
 void OsmWidget::setGpxTrack(GpxTrack *gpxTrack)
@@ -40,7 +43,19 @@ void OsmWidget::mouseMoveEvent(QMouseEvent *event)
 
 void OsmWidget::wheelEvent(QWheelEvent *event)
 {
-    m_zoom += event->delta() > 0 ? 1 : -1;
+    if (event->delta() > 0)
+    {
+        m_zoom += 1;
+        m_offsetX *= 2.0;
+        m_offsetY *= 2.0;
+    }
+    else if (event->delta() < 0)
+    {
+        m_zoom -= 1;
+        m_offsetX /= 2.0;
+        m_offsetY /= 2.0;
+    }
+
     repaint();
 }
 
@@ -68,6 +83,8 @@ void OsmWidget::paintEvent(QPaintEvent *event)
     pen.setWidthF(2.0);
     painter.setPen(pen);
 
+    QList<OsmTile> osmTileListToRequest;
+
     for (int j = m_offsetY / 256 - 1; j < size().height() / 256 + m_offsetY / 256 + 1; ++j)
     {
         for (int i = m_offsetX / 256 - 1; i < size().width() / 256 + m_offsetX / 256 + 1; ++i)
@@ -76,19 +93,13 @@ void OsmWidget::paintEvent(QPaintEvent *event)
 
             if (m_osmTileManager.hasImageInCache(currentOsmTile))
                 painter.drawImage(i * 256 - m_offsetX, j * 256 - m_offsetY, m_osmTileManager.imageFromCache(currentOsmTile));
-            else if (!m_osmTileManager.hasImageInRequest(currentOsmTile)) {
-                requestTile(i, j, currentOsmTile);
+            else {
+                osmTileListToRequest.append(currentOsmTile);
             }
         }
     }
 
     painter.drawPolyline(points.data(), points.count());
-}
 
-void OsmWidget::requestTile(int i,int j, const OsmTile &osmTile)
-{
-    m_osmTileManager.requestTile(osmTile);
-    connect(&m_osmTileManager, &OsmTileManager::imageReady, [this, i, j, osmTile] () {
-        //repaint();
-    });
+    m_osmTileManager.requestImageTileList(osmTileListToRequest);
 }

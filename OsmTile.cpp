@@ -45,6 +45,11 @@ int OsmTile::tileY() const
     return m_tileY;
 }
 
+bool OsmTile::operator ==(const OsmTile &tile) const
+{
+    return url() == tile.url();
+}
+
 OsmTile::OsmTile(int tileX, int tileY, int zoom)
     : m_tileX(tileX),
       m_tileY(tileY),

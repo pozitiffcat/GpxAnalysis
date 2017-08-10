@@ -16,6 +16,8 @@ public:
     int tileX() const;
     int tileY() const;
 
+    bool operator == (const OsmTile &tile) const;
+
 private:
     OsmTile(int tileX, int tileY, int zoom);
 
@@ -28,9 +30,9 @@ private:
     static double degToRad(double d);
 
 private:
-    const double m_tileX;
-    const double m_tileY;
-    const int m_zoom;
+    int m_tileX;
+    int m_tileY;
+    int m_zoom;
 };
 
 #endif // OSMTILE_H
