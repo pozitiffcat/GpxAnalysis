@@ -4,14 +4,14 @@
 #include <QStack>
 #include <QXmlStreamReader>
 
-bool GpxTrack::parse(const QString &fileName)
+GpxTrack::GpxTrack(const QString &fileName)
 {
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         m_error = QObject::tr("Can't open file");
-        return false;
+        return;
     }
 
     QXmlStreamReader xml(&file);
@@ -64,8 +64,11 @@ bool GpxTrack::parse(const QString &fileName)
         if (xml.tokenType() == QXmlStreamReader::EndElement)
             tagStack.pop();
     }
+}
 
-    return true;
+bool GpxTrack::hasError() const
+{
+    return !m_error.isEmpty();
 }
 
 QString GpxTrack::errorString() const

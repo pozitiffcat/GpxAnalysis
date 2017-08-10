@@ -13,6 +13,8 @@ public:
     explicit GpxAnalysisWidget(QWidget *parent = nullptr);
 
     void addData(GpxAnalysisData *data);
+    void clearDataSet();
+
     double currentDistance() const;
 
 signals:

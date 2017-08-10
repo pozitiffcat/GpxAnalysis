@@ -9,7 +9,9 @@
 class GpxTrack
 {
 public:
-    bool parse(const QString &fileName);
+    explicit GpxTrack(const QString &fileName);
+
+    bool hasError() const;
     QString errorString() const;
 
     const GpxPoint &point(qint64 position) const;

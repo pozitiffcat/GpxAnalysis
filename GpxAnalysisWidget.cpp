@@ -15,6 +15,12 @@ void GpxAnalysisWidget::addData(GpxAnalysisData *data)
     repaint();
 }
 
+void GpxAnalysisWidget::clearDataSet()
+{
+    m_gpxAnalysisDataList.clear();
+    repaint();
+}
+
 double GpxAnalysisWidget::currentDistance() const
 {
     return m_currentDistance;

@@ -69,7 +69,7 @@ void OsmWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
 
-    if (m_gpxTrack->pointsCount() == 0)
+    if (m_gpxTrack == nullptr || m_gpxTrack->pointsCount() == 0)
         return;
 
     QPainter painter(this);
