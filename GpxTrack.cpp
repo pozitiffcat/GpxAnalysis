@@ -96,3 +96,16 @@ double GpxTrack::elevationGain() const
 
     return acc;
 }
+
+double GpxTrack::distance() const
+{
+    double acc = 0.0;
+
+    for (qint64 i = 0; i < pointsCount() - 1; ++i)
+    {
+        const auto distanceTo = point(i).distanceTo(point(i + 1));
+        acc += distanceTo;
+    }
+
+    return acc;
+}

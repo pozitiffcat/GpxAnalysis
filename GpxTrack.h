@@ -16,6 +16,7 @@ public:
     qint64 pointsCount() const;
 
     double elevationGain() const;
+    double distance() const;
 
 private:
     QString m_error;

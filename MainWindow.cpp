@@ -7,12 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    QString fileName = "../1117025335.gpx";
     QString fileName = "../ors-export-linestring.gpx";
 
     m_gpxTrack.parse(fileName);
     setWindowTitle(QString("%1 [%2]").arg(qApp->applicationName(), fileName));
     ui->elevationGainLabel->setText(tr("%1 meters").arg(m_gpxTrack.elevationGain()));
+    ui->distanceLabel->setText(tr("%1 kilometers").arg(m_gpxTrack.distance() / 1000.0));
 
     m_speedAnalysisData.reset(new SpeedAnalysisData(&m_gpxTrack));
     m_elevationAnalysisData.reset(new ElevationAnalysisData(&m_gpxTrack));
