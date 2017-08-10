@@ -16,6 +16,10 @@ OsmWidget::OsmWidget(QWidget *parent)
 void OsmWidget::setGpxTrack(GpxTrack *gpxTrack)
 {
     m_gpxTrack = gpxTrack;
+    m_currentDistance = 0.0;
+    m_offsetX = 0.0;
+    m_offsetY = 0.0;
+    m_zoom = 10;
     repaint();
 }
 
@@ -69,15 +73,50 @@ void OsmWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
 
-    if (m_gpxTrack == nullptr || m_gpxTrack->pointsCount() == 0)
+    QPainter painter(this);
+    paintMap(&painter);
+    paintRoute(&painter);
+}
+
+void OsmWidget::paintMap(QPainter *painter)
+{
+    const int osmTileSize = 256;
+
+    OsmTile osmStartTile = OsmTile::fromLatLon(50.0, 30.0, m_zoom);
+
+    if (m_gpxTrack && m_gpxTrack->pointsCount() != 0)
+        osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), m_zoom);
+
+    QList<OsmTile> osmTileListToRequest;
+
+    for (int j = m_offsetY / osmTileSize - 1; j < size().height() / osmTileSize + m_offsetY / osmTileSize + 1; ++j)
+    {
+        for (int i = m_offsetX / osmTileSize - 1; i < size().width() / osmTileSize + m_offsetX / osmTileSize + 1; ++i)
+        {
+            auto currentOsmTile = OsmTile::fromXY(osmStartTile.tileX() + i, osmStartTile.tileY() + j, m_zoom);
+
+            if (m_osmTileManager.hasImageInCache(currentOsmTile))
+                painter->drawImage(i * osmTileSize - m_offsetX, j * osmTileSize - m_offsetY, m_osmTileManager.imageFromCache(currentOsmTile));
+            else {
+                osmTileListToRequest.append(currentOsmTile);
+            }
+        }
+    }
+
+    m_osmTileManager.requestImageTileList(osmTileListToRequest);
+}
+
+void OsmWidget::paintRoute(QPainter *painter)
+{
+    const int osmTileSize = 256;
+
+    if (!m_gpxTrack || m_gpxTrack->pointsCount() == 0)
         return;
 
-    QPainter painter(this);
+    OsmTile osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), m_zoom);
 
     QVector<QPointF> points;
     QPointF currentPoint;
-
-    OsmTile osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), m_zoom);
 
     double distanceCurrent = 0.0;
     QPointF pointCurrent;
@@ -93,7 +132,7 @@ void OsmWidget::paintEvent(QPaintEvent *event)
             distance = distanceCurrent + lastGpxPoint.distanceTo(gpxPoint);
         }
 
-        QPointF point = osmStartTile.latLonToPoint(256, 256, gpxPoint.lat(), gpxPoint.lon());
+        QPointF point = osmStartTile.latLonToPoint(osmTileSize, osmTileSize, gpxPoint.lat(), gpxPoint.lon());
         points.append(QPointF(point.x() - m_offsetX, point.y() - m_offsetY));
 
         if (m_currentDistance >= distanceCurrent && m_currentDistance < distance)
@@ -111,31 +150,13 @@ void OsmWidget::paintEvent(QPaintEvent *event)
         pointCurrent = point;
     }
 
-    QList<OsmTile> osmTileListToRequest;
-
-    for (int j = m_offsetY / 256 - 1; j < size().height() / 256 + m_offsetY / 256 + 1; ++j)
-    {
-        for (int i = m_offsetX / 256 - 1; i < size().width() / 256 + m_offsetX / 256 + 1; ++i)
-        {
-            auto currentOsmTile = OsmTile::fromXY(osmStartTile.tileX() + i, osmStartTile.tileY() + j, m_zoom);
-
-            if (m_osmTileManager.hasImageInCache(currentOsmTile))
-                painter.drawImage(i * 256 - m_offsetX, j * 256 - m_offsetY, m_osmTileManager.imageFromCache(currentOsmTile));
-            else {
-                osmTileListToRequest.append(currentOsmTile);
-            }
-        }
-    }
-
     QPen pen;
     pen.setColor(Qt::red);
     pen.setWidth(2.0);
 
-    painter.setPen(pen);
-    painter.setBrush(palette().highlight().color().darker());
+    painter->setPen(pen);
+    painter->setBrush(palette().highlight().color().darker());
 
-    painter.drawPolyline(points.data(), points.count());
-    painter.drawEllipse(currentPoint, 5, 5);
-
-    m_osmTileManager.requestImageTileList(osmTileListToRequest);
+    painter->drawPolyline(points.data(), points.count());
+    painter->drawEllipse(currentPoint, 5, 5);
 }

@@ -25,9 +25,14 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
+    void paintMap(QPainter *painter);
+    void paintRoute(QPainter *painter);
+
+private:
     GpxTrack *m_gpxTrack = nullptr;
     OsmTileManager m_osmTileManager;
-    int m_zoom = 10;
+
+    int m_zoom = 3;
     double m_currentDistance = 0.0;
 
     double m_x = 0.0;

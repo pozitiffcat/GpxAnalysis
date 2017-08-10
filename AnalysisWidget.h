@@ -18,7 +18,7 @@ public:
     double currentDistance() const;
 
 signals:
-    void currentDistanceChangedByMouse();
+    void currentDistanceChangedByMouse(double distance);
 
 protected:
     void mouseMoveEvent(QMouseEvent *event);

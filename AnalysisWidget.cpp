@@ -36,7 +36,7 @@ void AnalysisWidget::mouseMoveEvent(QMouseEvent *event)
 
     repaint();
 
-    emit currentDistanceChangedByMouse();
+    emit currentDistanceChangedByMouse(m_currentDistance);
 }
 
 void AnalysisWidget::paintEvent(QPaintEvent *event)

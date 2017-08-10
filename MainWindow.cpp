@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include <QMouseEvent>
+
 #include <QFuture>
 #include <QtConcurrent>
 
@@ -15,43 +17,38 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     loadRecentMenuFromSettings();
+
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openGpx);
-
-    QWidget *scrollableWidget = new QWidget;
-    scrollableWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-    scrollableWidget->setLayout(new QVBoxLayout);
-    ui->analysisScrollArea->setWidgetResizable(true);
-    ui->analysisScrollArea->setWidget(scrollableWidget);
-
-    QPalette analysisPalette = palette();
-    analysisPalette.setColor(QPalette::Background, analysisPalette.base().color());
-
-    m_elevationAnalysisWidget = new AnalysisWidget;
-    m_elevationAnalysisWidget->setAutoFillBackground(true);
-    m_elevationAnalysisWidget->setPalette(analysisPalette);
-    m_elevationAnalysisWidget->setFixedHeight(100);
-    scrollableWidget->layout()->addWidget(m_elevationAnalysisWidget);
-
-    connect(m_elevationAnalysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, [this] () {
-        ui->gpxMapWidget->setCurrentDistance(m_elevationAnalysisWidget->currentDistance());
-        m_speedAnalysisWidget->setCurrentDistance(m_elevationAnalysisWidget->currentDistance());
-    });
-
-    m_speedAnalysisWidget = new AnalysisWidget;
-    m_speedAnalysisWidget->setAutoFillBackground(true);
-    m_speedAnalysisWidget->setFixedHeight(100);
-    m_speedAnalysisWidget->setPalette(analysisPalette);
-    scrollableWidget->layout()->addWidget(m_speedAnalysisWidget);
-
-    connect(m_speedAnalysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, [this] () {
-        ui->gpxMapWidget->setCurrentDistance(m_speedAnalysisWidget->currentDistance());
-        m_elevationAnalysisWidget->setCurrentDistance(m_speedAnalysisWidget->currentDistance());
-    });
+    connect(ui->analysisWidget, &AnalysisWidget::currentDistanceChangedByMouse, ui->osmWidget, &OsmWidget::setCurrentDistance);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    updateWidgetsGeometry();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    updateWidgetsGeometry();
+}
+
+void MainWindow::updateWidgetsGeometry()
+{
+    QRect osmGeometry = ui->osmWidget->geometry();
+    osmGeometry.setTopLeft(QPoint(0, 0));
+    osmGeometry.setSize(ui->baseWidget->size());
+    ui->osmWidget->setGeometry(osmGeometry);
+
+    QRect analysisGeometry = ui->analysisFrame->geometry();
+    analysisGeometry.moveTo(QPoint(ui->baseWidget->size().width() - analysisGeometry.width() - 16, ui->baseWidget->size().height() - analysisGeometry.height() - 16));
+    ui->analysisFrame->setGeometry(analysisGeometry);
 }
 
 void MainWindow::loadRecentMenuFromSettings()
@@ -109,18 +106,11 @@ void MainWindow::openGpxByPath(const QString &fileName)
     connect(watcher, &QFutureWatcher<void>::finished, watcher, &QFutureWatcher<void>::deleteLater);
 
     connect(watcher, &QFutureWatcher<void>::finished, [this, fileName]() {
-
         setWindowTitle(QString("%1 [%2]").arg(qApp->applicationName(), fileName));
 
-        ui->gpxMapWidget->setGpxTrack(m_gpxTrack.data());
-        ui->elevationGainLabel->setText(tr("%1 meters").arg(m_gpxTrack->elevationGain()));
-        ui->distanceLabel->setText(tr("%1 kilometers").arg(m_gpxTrack->distance() / 1000.0));
-
+        ui->osmWidget->setGpxTrack(m_gpxTrack.data());
         m_elevationAnalysisData.reset(new ElevationAnalysisData(m_gpxTrack.data()));
-        m_speedAnalysisData.reset(new SpeedAnalysisData(m_gpxTrack.data()));
-
-        m_elevationAnalysisWidget->setAnalysisData(m_elevationAnalysisData.data());
-        m_speedAnalysisWidget->setAnalysisData(m_speedAnalysisData.data());
+        ui->analysisWidget->setAnalysisData(m_elevationAnalysisData.data());
 
         if (appendRecentMenuToSettings(fileName))
             loadRecentMenuFromSettings();
