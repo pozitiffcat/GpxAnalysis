@@ -19,6 +19,12 @@ void OsmWidget::setGpxTrack(GpxTrack *gpxTrack)
     repaint();
 }
 
+void OsmWidget::setCurrentDistance(double distance)
+{
+    m_currentDistance = distance;
+    repaint();
+}
+
 QSize OsmWidget::sizeHint() const
 {
     return QSize(256, 256);
@@ -69,19 +75,30 @@ void OsmWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     QVector<QPointF> points;
+    QPointF currentPoint;
 
     OsmTile osmStartTile = OsmTile::fromLatLon(m_gpxTrack->point(0).lat(), m_gpxTrack->point(0).lon(), m_zoom);
 
+    double distanceCurrent = 0.0;
+    double distanceLeft = 0.0;
     for (qint64 i = 0; i < m_gpxTrack->pointsCount(); ++i)
     {
         const auto &gpxPoint = m_gpxTrack->point(i);
+
+        if (i != 0)
+        {
+            const auto &lastGpxPoint = m_gpxTrack->point(i - 1);
+            distanceLeft = distanceCurrent + lastGpxPoint.distanceTo(gpxPoint);
+        }
+
         QPointF point = osmStartTile.latLonToPoint(256, 256, gpxPoint.lat(), gpxPoint.lon());
         points.append(QPointF(point.x() - m_offsetX, point.y() - m_offsetY));
-    }
 
-    QPen pen(Qt::black);
-    pen.setWidthF(2.0);
-    painter.setPen(pen);
+        if (m_currentDistance >= distanceCurrent && m_currentDistance < distanceLeft)
+            currentPoint = QPointF(point.x() - m_offsetX, point.y() - m_offsetY);
+
+        distanceCurrent = distanceLeft;
+    }
 
     QList<OsmTile> osmTileListToRequest;
 
@@ -99,7 +116,15 @@ void OsmWidget::paintEvent(QPaintEvent *event)
         }
     }
 
+    QPen pen;
+    pen.setColor(Qt::red);
+    pen.setWidth(2.0);
+
+    painter.setPen(pen);
+    painter.setBrush(palette().highlight().color().darker());
+
     painter.drawPolyline(points.data(), points.count());
+    painter.drawEllipse(currentPoint, 5, 5);
 
     m_osmTileManager.requestImageTileList(osmTileListToRequest);
 }

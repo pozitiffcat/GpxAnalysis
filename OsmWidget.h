@@ -14,6 +14,7 @@ public:
     explicit OsmWidget(QWidget *parent = nullptr);
 
     void setGpxTrack(GpxTrack *gpxTrack);
+    void setCurrentDistance(double distance);
 
     QSize sizeHint() const;
 
@@ -27,6 +28,7 @@ private:
     GpxTrack *m_gpxTrack = nullptr;
     OsmTileManager m_osmTileManager;
     int m_zoom = 10;
+    double m_currentDistance = 0.0;
 
     double m_x = 0.0;
     double m_y = 0.0;

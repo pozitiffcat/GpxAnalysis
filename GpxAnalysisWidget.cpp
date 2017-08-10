@@ -1,10 +1,12 @@
 #include "GpxAnalysisWidget.h"
 
+#include <QMouseEvent>
 #include <QPainter>
 
 GpxAnalysisWidget::GpxAnalysisWidget(QWidget *parent)
     : QWidget(parent)
 {
+    setMouseTracking(true);
 }
 
 void GpxAnalysisWidget::addData(GpxAnalysisData *data)
@@ -13,8 +15,29 @@ void GpxAnalysisWidget::addData(GpxAnalysisData *data)
     repaint();
 }
 
+double GpxAnalysisWidget::currentDistance() const
+{
+    return m_currentDistance;
+}
+
+void GpxAnalysisWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_gpxAnalysisDataList.isEmpty())
+        return;
+
+    double distance = m_gpxAnalysisDataList.first()->distance();
+    m_currentDistance = event->x() * distance / size().width();
+
+    repaint();
+
+    emit currentDistanceChanged();
+}
+
 void GpxAnalysisWidget::paintEvent(QPaintEvent *event)
 {
+    if (m_gpxAnalysisDataList.isEmpty())
+        return;
+
     QWidget::paintEvent(event);
 
     QPainter painter(this);
@@ -26,6 +49,15 @@ void GpxAnalysisWidget::paintEvent(QPaintEvent *event)
         paintData(&painter, gpxAnalysisData, color);
         color = color.lighter();
     }
+
+    double distance = m_gpxAnalysisDataList.first()->distance();
+    double currentDistanceX = m_currentDistance * size().width() / distance;
+
+    QPen pen(palette().highlight().color());
+    pen.setWidth(1.0);
+    painter.setPen(pen);
+
+    painter.drawLine(QPointF(currentDistanceX, 0.0), QPointF(currentDistanceX, size().height()));
 }
 
 void GpxAnalysisWidget::paintData(QPainter *painter, GpxAnalysisData *data, const QColor &color)

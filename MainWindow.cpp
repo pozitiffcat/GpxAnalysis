@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_elevationAnalysisData.reset(new ElevationAnalysisData(&m_gpxTrack));
     ui->gpxAnalysisWidget->addData(m_speedAnalysisData.data());
     ui->gpxAnalysisWidget->addData(m_elevationAnalysisData.data());
+
+    connect(ui->gpxAnalysisWidget, &GpxAnalysisWidget::currentDistanceChanged, [this] () {
+        ui->gpxMapWidget->setCurrentDistance(ui->gpxAnalysisWidget->currentDistance());
+    });
 }
 
 MainWindow::~MainWindow()

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0,0">
     <item>
      <widget class="OsmWidget" name="gpxMapWidget" native="true"/>
     </item>
@@ -63,7 +63,14 @@
      </widget>
     </item>
     <item>
-     <widget class="GpxAnalysisWidget" name="gpxAnalysisWidget" native="true"/>
+     <widget class="GpxAnalysisWidget" name="gpxAnalysisWidget" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>100</height>
+       </size>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
